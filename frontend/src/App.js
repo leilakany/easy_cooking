@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 import RecipeCard from './RecipeCard';
 
+import ClockUsingHooks from './fridge/FridgeComponent';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -125,7 +126,7 @@ export default function App() {
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
+          <Tab label="Fridge" {...a11yProps(1)} />
           <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
@@ -161,7 +162,7 @@ export default function App() {
       </Grid>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <ClockUsingHooks></ClockUsingHooks>
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three
@@ -169,52 +170,3 @@ export default function App() {
     </div>
   );
 }
-
-// import React, { Component } from 'react';
-// import './App.css';
-// import Tabs from '@material-ui/core/Tabs';
-// import Tab from '@material-ui/core/Tab'
-// import AppBar from '@material-ui/core/AppBar';
-
-
-// class App extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       apiResponse: ""
-//     };
-//   }
-
-//   callAPI() {
-//     fetch("http://localhost:9000/testAPI")
-//       .then(res => res.text())
-//       .then(res => this.setState({ apiResponse: res }))
-//   }
-
-//   componentDidMount() {
-//     this.callAPI();
-//   }
-
-//   render() {
-//     return(
-//     <>
-//     <AppBar position="static">
-//       <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-//         <Tab label="Item One" {...a11yProps(0)} />
-//         <Tab label="Item Two" {...a11yProps(1)} />
-//         <Tab label="Item Three" {...a11yProps(2)} />
-//       </Tabs>
-//     </AppBar>
-//       <TabPanel value={value} index={0}>
-//         Item One
-//     </TabPanel>
-//           <TabPanel value={value} index={1}>
-//             Item Two
-//     </TabPanel>
-//           <TabPanel value={value} index={2}>
-//             Item Three
-//     </TabPanel>
-//     </>
-//     )
-//   }
-// }
