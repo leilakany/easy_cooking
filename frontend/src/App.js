@@ -46,6 +46,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+    marginLeft: theme.spacing(3),
   },
   search: {
     position: 'relative',
@@ -128,31 +129,36 @@ export default function App() {
           <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
+
       <TabPanel value={value} index={0}>
-        <h1>Welcome to easy cooking ! </h1>
-        <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+      <Grid container spacing={3}> 
+        <Grid item xs={12}>
+          <h1>Welcome to easy cooking ! </h1>
+        </Grid>
+        <Grid item xs={12}>
+          <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <div>
+              <InputBase
+                placeholder="Search recipe"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ 'aria-label': 'search' }}
+                onKeyDown = {keyPress}
+              />
+              </div>
             </div>
-            <div>
-            <InputBase
-              placeholder="Search recipe"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-              onKeyDown = {keyPress}
-            />
-            </div>
-          </div>
-
-          <div>
-          <Grid container spacing={5}>  
-            {state.recipes.map((item, i)=>{ return <Grid spacing={3}><RecipeCard key={item.id} title={item.title} img={item.image} url={state.url}></RecipeCard></Grid>})}
-          </Grid>
-          </div>
-
+        </Grid>
+        <div className={classes.root}>
+        <Grid container direction="row"> 
+              {state.recipes.map((item, i)=>{ return <Grid item xs={3}><RecipeCard key={item.id} title={item.title} img={item.image} url={state.url}></RecipeCard></Grid>})}
+        </Grid>
+        </div>
+      </Grid>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two
