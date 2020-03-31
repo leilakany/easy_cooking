@@ -6,7 +6,13 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
+    <>
+    <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        />
     <App />
+    </>
   </React.StrictMode>,
   document.getElementById('root')
 );
