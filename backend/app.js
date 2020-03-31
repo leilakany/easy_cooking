@@ -12,7 +12,7 @@ var mongoose = require('mongoose');
 require('dotenv').config()
 
 var app = express();
-
+app.use(express.json());
 // Connect to mongoose
 mongoose
   .connect(process.env.DATABASE_URL, {
@@ -26,7 +26,6 @@ mongoose
 
 // Define some routers
 var productRouter = require('./routes/product');
-app.use('/product', productRouter); // Under endpoint /product, we have REST operations for product
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -34,13 +33,14 @@ app.set('view engine', 'jade');
 
 app.use(cors());
 app.use(logger('dev'));
-app.use(express.json());
+
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/testAPI', testAPIRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/product', productRouter); // Under endpoint /product, we have REST operations for product
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
