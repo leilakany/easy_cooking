@@ -12,6 +12,12 @@ import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 import RecipeCard from './RecipeCard';
 
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+
 import ClockUsingHooks from './fridge/FridgeComponent';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -90,12 +96,31 @@ const useStyles = makeStyles(theme => ({
 
 export default function App() {
   const classes = useStyles();
-  const [state, setState] = useState({'recipes':[]});
+  const [state, setState] = useState({'recipes':[], 'diet':'', 'query':'', 'url' : ''});
   const [value, setValue] = React.useState(0);
   const [apiState, setApiState] = React.useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleDietChange = (event) => {
+    let prev = state;
+    let diet = event.target.value
+    if (state.query.localeCompare('')!==0){
+      let request = state.query+"&diet="+diet
+      axios.get(request).then((resp) => {
+        let recipes = []
+        let url = resp.data.baseUri;
+        recipes = resp.data.results;
+        // let prev = state;
+        // prev['recipes'] = recipes;
+        // prev['url'] = url;
+        // setState(prev);
+        setState({'recipes':recipes, 'diet':diet, 'url':url, 'query':state.query})
+      })
+    }
+    setState({'recipes':[], 'diet':diet, 'url':'', 'query':''})
   };
 
   async function getApiState() {
@@ -106,12 +131,20 @@ export default function App() {
 
   const keyPress = (event) => {
     if(event.keyCode === 13){
-      axios.get('https://api.spoonacular.com/recipes/search?number=10&apiKey=d98ea6c059fb41daab9c7d8f751e086f&query='+event.target.value).then((resp) => {
+      let request = 'https://api.spoonacular.com/recipes/search?number=12&apiKey=d98ea6c059fb41daab9c7d8f751e086f&query='+event.target.value;
+      if (state.diet.localeCompare('')!==0) {
+        request += '&diet='+state.diet
+      }
+      axios.get(request).then((resp) => {
             let recipes = []
             let url = resp.data.baseUri;
             recipes = resp.data.results;
-            console.log(recipes)
-            setState({ 'recipes' : recipes, 'url':url});
+            // let prev = state
+            // prev['recipes'] = recipes;
+            // prev.url=url;
+            // prev.query=request;
+            // console.log(prev);
+            setState({'recipes':recipes, 'url':url, 'query':request, 'diet':state.diet});
         })
       }
   }
@@ -136,7 +169,7 @@ export default function App() {
         <Grid item xs={12}>
           <h1>Welcome to easy cooking ! </h1>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={4}>
           <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
@@ -154,9 +187,28 @@ export default function App() {
               </div>
             </div>
         </Grid>
+        <Grid item xs={4}>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Diet</FormLabel>
+          <RadioGroup row aria-label="diet" name="dier1" value={value} onChange={handleDietChange}>
+            <FormControlLabel value="" control={<Radio />} label="No special diet" checked={state.diet.localeCompare('')==0}/>
+            <FormControlLabel value="vegetarian" control={<Radio />} label="Vegetarian" checked={state.diet.localeCompare('vegetarian')==0}/>
+            <FormControlLabel value="vegan" control={<Radio />} label="Vegan" checked={state.diet.localeCompare('vegan')==0}/>
+          </RadioGroup>
+        </FormControl>
+        </Grid>
+        <Grid item xs={4}>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Ingredients</FormLabel>
+          <RadioGroup row aria-label="ingredients" name="dier1" value={value}>
+            <FormControlLabel value="fridge" control={<Radio />} label="In my fridge" />
+            <FormControlLabel value="all" control={<Radio />} label="All" checked={true}/>
+          </RadioGroup>
+        </FormControl>
+        </Grid>
         <div className={classes.root}>
         <Grid container direction="row"> 
-              {state.recipes.map((item, i)=>{ return <Grid item xs={3}><RecipeCard key={item.id} title={item.title} img={item.image} url={state.url}></RecipeCard></Grid>})}
+              {state.recipes.map((item, i)=>{ return <Grid item xs={3} key={item.id}><RecipeCard title={item.title} img={item.image} url={state.url}></RecipeCard></Grid>})}
         </Grid>
         </div>
       </Grid>
