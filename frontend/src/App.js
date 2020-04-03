@@ -98,7 +98,6 @@ export default function App() {
   const classes = useStyles();
   const [state, setState] = useState({'recipes':[], 'diet':'', 'query':'', 'url' : ''});
   const [value, setValue] = React.useState(0);
-  const [apiState, setApiState] = React.useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -113,21 +112,11 @@ export default function App() {
         let recipes = []
         let url = resp.data.baseUri;
         recipes = resp.data.results;
-        // let prev = state;
-        // prev['recipes'] = recipes;
-        // prev['url'] = url;
-        // setState(prev);
         setState({'recipes':recipes, 'diet':diet, 'url':url, 'query':state.query})
       })
     }
     setState({'recipes':[], 'diet':diet, 'url':'', 'query':''})
   };
-
-  async function getApiState() {
-    const res = await fetch("http://localhost:9000/testAPI")  
-    const data = await res.text()
-    setApiState(data);  
-  }
 
   const keyPress = (event) => {
     if(event.keyCode === 13){
@@ -139,18 +128,13 @@ export default function App() {
             let recipes = []
             let url = resp.data.baseUri;
             recipes = resp.data.results;
-            // let prev = state
-            // prev['recipes'] = recipes;
-            // prev.url=url;
-            // prev.query=request;
-            // console.log(prev);
             setState({'recipes':recipes, 'url':url, 'query':request, 'diet':state.diet});
         })
       }
   }
 
   useEffect(() => {
-    getApiState()
+
   }, []);
 
 
@@ -165,7 +149,7 @@ export default function App() {
       </AppBar>
 
       <TabPanel value={value} index={0}>
-      <Grid container spacing={3}> 
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <h1>Welcome to easy cooking ! </h1>
         </Grid>
