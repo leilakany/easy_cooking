@@ -207,7 +207,7 @@ export default function App() {
         </FormControl>
         </Grid>
         <div className={classes.root}>
-        <Grid container direction="row"> 
+        <Grid container direction="row" spacing={3} >
               {state.recipes.map((item, i)=>{ return <Grid item xs={3} key={item.id}><RecipeCard title={item.title} img={item.image} url={state.url}></RecipeCard></Grid>})}
         </Grid>
         </div>
