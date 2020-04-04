@@ -8,13 +8,17 @@ import top1000_ingredients from '../assets/spoonacular_ingredients.json'
 const backend_url = "http://127.0.0.1:9000/"
 
 export default function ClockUsingHooks() {
-    const [state, setState] = useState({});
+    const [state, setState] = useState({})
     const [tmpIngredientName, setTmpIngredientName] = useState(null)
+    const baseUnits = {1:"tsp", 2:"tbs", 3:"fl oz", 4:"cup", 5: "pint", 6:"quart", 7:"gallon"
+                        , 8:"ml", 9:"l", 10:"pound", 11:"ounce", 12:"mg", 13:"g", 14:"kg", 15:"mm", 16:"cm", 17:"m", 18:"inch"}
 
     function postIngredient(ingredient) {
         axios.post(backend_url + 'ingredient', {
             name: ingredient.name,
             quantity: ingredient.quantity,
+            api_id: ingredient.api_id,
+            unit: ingredient.unit,
         })
     }
 
@@ -25,7 +29,9 @@ export default function ClockUsingHooks() {
     function modifyIngredient(ingredient) {
         axios.patch(backend_url + 'ingredient/' + ingredient.id, {
             name: ingredient.name,
-            quantity: ingredient.quantity
+            quantity: ingredient.quantity,
+            api_id: ingredient.api_id,
+            unit: ingredient.unit,
         })
     }
 
@@ -41,6 +47,11 @@ export default function ClockUsingHooks() {
                 {
                     title: 'Quantity',
                     field: 'quantity'
+                },
+                {
+                    title: 'Unit',
+                    field: 'unit',
+                    lookup: baseUnits
                 }
             ]
             let data = []
@@ -48,12 +59,18 @@ export default function ClockUsingHooks() {
                 data.push({
                     name: element.name,
                     quantity: element.quantity,
-                    id: element._id
+                    id: element._id,
+                    api_id: element.api_id,
+                    unit: element.unit
                 })
             });
             setState({ 'columns': columns, 'data': data })
         })
     }, [])
+
+    function newSelectedIngredient(value) {
+        setTmpIngredientName(value)
+    }
 
     return (
         <MaterialTable
@@ -66,7 +83,7 @@ export default function ClockUsingHooks() {
                     if (props.columnDef.field === "name") {
                         return <Autocomplete
                             id="combo-box-demo"
-                            onChange={(event, value) => setTmpIngredientName(value)}
+                            onChange={(event, value) => newSelectedIngredient(value)}
                             value={tmpIngredientName}
                             options={top1000_ingredients}
                             getOptionLabel={(option) => option.name}
@@ -85,6 +102,7 @@ export default function ClockUsingHooks() {
                         setTimeout(() => {
                             resolve();
                             newData["name"] = tmpIngredientName["name"]
+                            newData["api_id"] = tmpIngredientName["id"]
                             setTmpIngredientName(null)
                             postIngredient(newData)
                             setState((prevState) => {
@@ -99,6 +117,7 @@ export default function ClockUsingHooks() {
                         setTimeout(() => {
                             resolve();
                             newData["name"] = tmpIngredientName["name"]
+                            newData["api_id"] = tmpIngredientName["id"]
                             setTmpIngredientName(null)
                             if (oldData) {
                                 modifyIngredient(newData)
