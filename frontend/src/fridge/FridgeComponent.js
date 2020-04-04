@@ -3,56 +3,44 @@ import axios from 'axios';
 import MaterialTable, { MTableEditField } from 'material-table';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { makeStyles } from '@material-ui/core/styles';
 
 import top1000_ingredients from '../assets/spoonacular_ingredients.json'
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    paper: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    },
-}));
+const backend_url = "http://127.0.0.1:9000/"
 
 export default function ClockUsingHooks() {
     const [state, setState] = useState({});
-    const [prodId] = useState(0);
-    const classes = useStyles();
     const [tmpIngredientName, setTmpIngredientName] = useState(null)
 
-    function postProduct(product) {
-        axios.post('http://127.0.0.1:9000/product', {
-            name: product.name,
-            quantity: product.quantity,
+    function postIngredient(ingredient) {
+        axios.post(backend_url + 'ingredient', {
+            name: ingredient.name,
+            quantity: ingredient.quantity,
         })
     }
 
-    function deleteProduct(product) {
-        axios.delete('http://127.0.0.1:9000/product/' + product.id)
+    function deleteIngredient(ingredient) {
+        axios.delete(backend_url + 'ingredient/' + ingredient.id)
     }
 
-    function modifyProduct(product) {
-        axios.patch('http://127.0.0.1:9000/product/' + product.id, {
-            name: product.name,
-            quantity: product.quantity
+    function modifyIngredient(ingredient) {
+        axios.patch(backend_url + 'ingredient/' + ingredient.id, {
+            name: ingredient.name,
+            quantity: ingredient.quantity
         })
     }
 
     useEffect(() => {
         // Get list of existing ingredients in the fridge and
         // parse them to an object that Material-Table will read
-        axios.get('http://127.0.0.1:9000/product/').then((resp) => {
+        axios.get(backend_url + 'ingredient/').then((resp) => {
             let columns = [
                 {
                     title: 'Name',
                     field: 'name',
                 },
                 {
-                    title: 'Quantity', field: 'quantity'
+                    title: 'Quantity',
+                    field: 'quantity'
                 }
             ]
             let data = []
@@ -65,7 +53,7 @@ export default function ClockUsingHooks() {
             });
             setState({ 'columns': columns, 'data': data })
         })
-    }, [prodId])
+    }, [])
 
     return (
         <MaterialTable
@@ -76,13 +64,12 @@ export default function ClockUsingHooks() {
             components={{
                 EditField: props => {
                     if (props.columnDef.field === "name") {
-                        console.log("PROPS : ", props)
                         return <Autocomplete
                             id="combo-box-demo"
                             onChange={(event, value) => setTmpIngredientName(value)}
                             value={tmpIngredientName}
                             options={top1000_ingredients}
-                            getOptionLabel={(option) => option.ingredient}
+                            getOptionLabel={(option) => option.name}
                             style={{ width: 300 }}
                             renderInput={(params) => <TextField {...params} label="Ingredient name" variant="outlined" />}
                         />
@@ -97,9 +84,9 @@ export default function ClockUsingHooks() {
                     new Promise((resolve) => {
                         setTimeout(() => {
                             resolve();
-                            newData["name"] = tmpIngredientName["ingredient"]
+                            newData["name"] = tmpIngredientName["name"]
                             setTmpIngredientName(null)
-                            postProduct(newData)
+                            postIngredient(newData)
                             setState((prevState) => {
                                 const data = [...prevState.data];
                                 data.push(newData);
@@ -111,10 +98,10 @@ export default function ClockUsingHooks() {
                     new Promise((resolve) => {
                         setTimeout(() => {
                             resolve();
-                            newData["name"] = tmpIngredientName["ingredient"]
+                            newData["name"] = tmpIngredientName["name"]
                             setTmpIngredientName(null)
                             if (oldData) {
-                                modifyProduct(newData)
+                                modifyIngredient(newData)
                                 setState((prevState) => {
                                     const data = [...prevState.data];
                                     data[data.indexOf(oldData)] = newData;
@@ -128,7 +115,7 @@ export default function ClockUsingHooks() {
                     new Promise((resolve) => {
                         setTimeout(() => {
                             resolve();
-                            deleteProduct(oldData)
+                            deleteIngredient(oldData)
                             setState((prevState) => {
                                 const data = [...prevState.data];
                                 data.splice(data.indexOf(oldData), 1);
