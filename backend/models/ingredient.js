@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 var SchemaTypes = mongoose.Schema.Types;
-const productSchema = new mongoose.Schema({
+const ingredientSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -12,4 +12,4 @@ const productSchema = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model('Ingredient', ingredientSchema);
