@@ -9,6 +9,14 @@ const ingredientSchema = new mongoose.Schema({
     quantity: {
         type: String,
         required: false,
+    },
+    unit: {
+        type: String,
+        required: true,
+    },
+    api_id: {
+        type: Number,
+        required: true,
     }
 })
 

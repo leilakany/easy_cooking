@@ -22,7 +22,9 @@ router.post('/', async(req, res) => {
     // Define a json object holding values
     const ingredient = new Ingredient({
         name: req.body.name,
-        quantity: req.body.quantity
+        quantity: req.body.quantity,
+        api_id: req.body.api_id,
+        unit: req.body.unit
     })
 
     // Add to mongo the entity previously created
@@ -34,16 +36,22 @@ router.post('/', async(req, res) => {
     }
 })
 
-// Update one ingredeint
+// Update one ingredient
 router.patch('/:id', getIngredient, async(req, res) => {
     if(req.body.name != null){
-        res.ingredeint.name = req.body.name
+        res.ingredient.name = req.body.name
     }
     if (req.body.quantity != null) {
-        res.ingredeint.quantity = req.body.quantity
+        res.ingredient.quantity = req.body.quantity
+    }
+    if (req.body.api_id != null) {
+        res.ingredient.api_id = req.body.api_id
+    }
+    if (req.body.unit != null) {
+        res.ingredient.unit = req.body.unit
     }
     try {
-        const updateIngredient = await res.ingredeint.save()
+        const updateIngredient = await res.ingredient.save()
         res.json(updateIngredient)
     } catch(err) {
         res.status(400).json({message: err.message})
