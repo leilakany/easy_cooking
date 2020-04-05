@@ -1,8 +1,11 @@
 import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 
 class RecipeCard extends React.Component {
     constructor(props){
@@ -31,12 +34,20 @@ class RecipeCard extends React.Component {
         };
         return (
             <Card style={styles.card}>
-            <CardHeader title={this.title}/>
-            <CardMedia
-                image={this.image_url}
-                style={styles.media}
-            />
-            <CardContent></CardContent>
+                <CardActionArea onClick={()=>console.log("clique")}> {/* Makes card cliquable */}
+                    <CardMedia
+                        image={this.image_url}
+                        style={styles.media}
+                    />
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="h2">
+                            {this.title}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            Ready in {this.ready_in_mn} mn
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
             </Card>
         )
     }
