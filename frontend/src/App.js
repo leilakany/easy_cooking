@@ -19,6 +19,9 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
 import ClockUsingHooks from './fridge/FridgeComponent';
+
+let API_KEY = process.env.REACT_APP_API_KEY;
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -120,7 +123,7 @@ export default function App() {
 
   const keyPress = (event) => {
     if(event.keyCode === 13){
-      let request = 'https://api.spoonacular.com/recipes/search?number=12&apiKey=d98ea6c059fb41daab9c7d8f751e086f&query='+event.target.value;
+      let request = 'https://api.spoonacular.com/recipes/search?number=12&apiKey='+API_KEY+'&query='+event.target.value;
       if (state.diet.localeCompare('')!==0) {
         request += '&diet='+state.diet
       }
@@ -175,9 +178,9 @@ export default function App() {
         <FormControl component="fieldset">
           <FormLabel component="legend">Diet</FormLabel>
           <RadioGroup row aria-label="diet" name="dier1" value={value} onChange={handleDietChange}>
-            <FormControlLabel value="" control={<Radio />} label="No special diet" checked={state.diet.localeCompare('')==0}/>
-            <FormControlLabel value="vegetarian" control={<Radio />} label="Vegetarian" checked={state.diet.localeCompare('vegetarian')==0}/>
-            <FormControlLabel value="vegan" control={<Radio />} label="Vegan" checked={state.diet.localeCompare('vegan')==0}/>
+            <FormControlLabel value="" control={<Radio />} label="No special diet" checked={state.diet.localeCompare('')===0}/>
+            <FormControlLabel value="vegetarian" control={<Radio />} label="Vegetarian" checked={state.diet.localeCompare('vegetarian')===0}/>
+            <FormControlLabel value="vegan" control={<Radio />} label="Vegan" checked={state.diet.localeCompare('vegan')===0}/>
           </RadioGroup>
         </FormControl>
         </Grid>
