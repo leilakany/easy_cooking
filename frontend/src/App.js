@@ -10,7 +10,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
-import RecipeCard from './RecipeCard';
+import RecipeCard from './recipes/RecipeCard';
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -107,7 +107,6 @@ export default function App() {
   };
 
   const handleDietChange = (event) => {
-    let prev = state;
     let diet = event.target.value
     if (state.query.localeCompare('')!==0){
       let request = state.query+"&diet="+diet
@@ -145,7 +144,7 @@ export default function App() {
     <div className={classes.root}>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Item One" {...a11yProps(0)} />
+          <Tab label="Home" {...a11yProps(0)} />
           <Tab label="Fridge" {...a11yProps(1)} />
           <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>
@@ -195,7 +194,7 @@ export default function App() {
         </Grid>
         <div className={classes.root}>
         <Grid container direction="row" spacing={3} >
-              {state.recipes.map((item, i)=>{ return <Grid item xs={3} key={item.id}><RecipeCard title={item.title} img={item.image} url={state.url} time={item.readyInMinutes}></RecipeCard></Grid>})}
+              {state.recipes.map((item, i)=>{ return <Grid item xs={3} key={item.id}><RecipeCard id={item.id} title={item.title} img={item.image} url={state.url} time={item.readyInMinutes}></RecipeCard></Grid>})}
         </Grid>
         </div>
       </Grid>

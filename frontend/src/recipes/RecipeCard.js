@@ -1,24 +1,35 @@
 import React from 'react';
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
+import axios from 'axios';
+let API_KEY = process.env.REACT_APP_API_KEY;
+
 class RecipeCard extends React.Component {
     constructor(props){
         super(props);
         this.state = {
         }
+        this.id = this.props.id;
+        this.title = this.props.title;
+        this.ready_in_mn = this.props.time;
+        this.url = this.props.url;
+        this.image_url = this.url+this.props.img;
+        this.display_recipe = this.display_recipe.bind(this);
+    }
+
+    display_recipe(){
+        console.log(this.id)
+        let request = 'https://api.spoonacular.com/recipes/'+this.id+'/analyzedInstructions'+'?apiKey='+API_KEY;
+        console.log(request)
+        axios.get(request).then((resp)=>console.log(resp))
     }
     
     render(){
-        this.title = this.props.title
-        this.ready_in_mn = this.props.time
-        this.url = this.props.url
-        this.image_url = this.url+this.props.img
         const styles = 
         {
             card: {
@@ -34,7 +45,7 @@ class RecipeCard extends React.Component {
         };
         return (
             <Card style={styles.card}>
-                <CardActionArea onClick={()=>console.log("clique")}> {/* Makes card cliquable */}
+                <CardActionArea onClick={this.display_recipe}> {/* Makes card cliquable */}
                     <CardMedia
                         image={this.image_url}
                         style={styles.media}
