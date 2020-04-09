@@ -6,21 +6,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
-import Grid from '@material-ui/core/Grid';
-import axios from 'axios';
-import RecipeCard from './recipes/RecipeCard';
-
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-
+import SearchRecipe from './recipes/SearchRecipes';
 import ClockUsingHooks from './fridge/FridgeComponent';
-
-let API_KEY = process.env.REACT_APP_API_KEY;
+import { BrowserRouter } from "react-router-dom";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -99,112 +87,33 @@ const useStyles = makeStyles(theme => ({
 
 export default function App() {
   const classes = useStyles();
-  const [state, setState] = useState({'recipes':[], 'diet':'', 'query':'', 'url' : ''});
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const handleDietChange = (event) => {
-    let diet = event.target.value
-    if (state.query.localeCompare('')!==0){
-      let request = state.query+"&diet="+diet
-      axios.get(request).then((resp) => {
-        let recipes = []
-        let url = resp.data.baseUri;
-        recipes = resp.data.results;
-        setState({'recipes':recipes, 'diet':diet, 'url':url, 'query':state.query})
-      })
-    }
-    setState({'recipes':[], 'diet':diet, 'url':'', 'query':''})
-  };
-
-  const keyPress = (event) => {
-    if(event.keyCode === 13){
-      let request = 'https://api.spoonacular.com/recipes/search?number=12&apiKey='+API_KEY+'&query='+event.target.value;
-      if (state.diet.localeCompare('')!==0) {
-        request += '&diet='+state.diet
-      }
-      axios.get(request).then((resp) => {
-            let recipes = []
-            let url = resp.data.baseUri;
-            recipes = resp.data.results;
-            setState({'recipes':recipes, 'url':url, 'query':request, 'diet':state.diet});
-        })
-      }
-  }
-
-  useEffect(() => {
-
-  }, []);
-
-
   return (
+    <BrowserRouter>
     <div className={classes.root}>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Home" {...a11yProps(0)} />
+          <Tab label="Recipes" {...a11yProps(0)} href="/"/>
           <Tab label="Fridge" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="..." {...a11yProps(2)} />
         </Tabs>
       </AppBar>
 
       <TabPanel value={value} index={0}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <h1>Welcome to easy cooking ! </h1>
-        </Grid>
-        <Grid item xs={4}>
-          <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <div>
-              <InputBase
-                placeholder="Search recipe"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': 'search' }}
-                onKeyDown = {keyPress}
-              />
-              </div>
-            </div>
-        </Grid>
-        <Grid item xs={4}>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Diet</FormLabel>
-          <RadioGroup row aria-label="diet" name="dier1" value={value} onChange={handleDietChange}>
-            <FormControlLabel value="" control={<Radio />} label="No special diet" checked={state.diet.localeCompare('')===0}/>
-            <FormControlLabel value="vegetarian" control={<Radio />} label="Vegetarian" checked={state.diet.localeCompare('vegetarian')===0}/>
-            <FormControlLabel value="vegan" control={<Radio />} label="Vegan" checked={state.diet.localeCompare('vegan')===0}/>
-          </RadioGroup>
-        </FormControl>
-        </Grid>
-        <Grid item xs={4}>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Ingredients</FormLabel>
-          <RadioGroup row aria-label="ingredients" name="dier1" value={value}>
-            <FormControlLabel value="fridge" control={<Radio />} label="In my fridge" />
-            <FormControlLabel value="all" control={<Radio />} label="All" checked={true}/>
-          </RadioGroup>
-        </FormControl>
-        </Grid>
-        <div className={classes.root}>
-        <Grid container direction="row" spacing={3} >
-              {state.recipes.map((item, i)=>{ return <Grid item xs={3} key={item.id}><RecipeCard id={item.id} title={item.title} img={item.image} url={state.url} time={item.readyInMinutes}></RecipeCard></Grid>})}
-        </Grid>
-        </div>
-      </Grid>
+        <SearchRecipe/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ClockUsingHooks></ClockUsingHooks>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
       </TabPanel>
     </div>
+    </BrowserRouter>
   );
+
 }

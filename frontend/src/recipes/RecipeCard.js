@@ -1,10 +1,13 @@
 import React from 'react';
+import { Link as RouterLink, Route, Switch } from 'react-router-dom'
+import Link from '@material-ui/core/Link'
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import Recipe from './CompleteRecipe';
 
 import axios from 'axios';
 let API_KEY = process.env.REACT_APP_API_KEY;
@@ -26,7 +29,7 @@ class RecipeCard extends React.Component {
         console.log(this.id)
         let request = 'https://api.spoonacular.com/recipes/'+this.id+'/analyzedInstructions'+'?apiKey='+API_KEY;
         console.log(request)
-        axios.get(request).then((resp)=>console.log(resp))
+        axios.get(request).then((resp)=>console.log(resp.data))
     }
     
     render(){
@@ -44,22 +47,24 @@ class RecipeCard extends React.Component {
             }
         };
         return (
-            <Card style={styles.card}>
-                <CardActionArea onClick={this.display_recipe}> {/* Makes card cliquable */}
-                    <CardMedia
-                        image={this.image_url}
-                        style={styles.media}
-                    />
-                    <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            {this.title}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                            Ready in {this.ready_in_mn} mn
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
+            <div>
+                <Card style={styles.card}>
+                    <CardActionArea href={"/recipe/" + this.id} > {/*Makes card cliquable*/}
+                        <CardMedia
+                            image={this.image_url}
+                            style={styles.media}
+                        />
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="h2">
+                                {this.title}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary" component="p">
+                                Ready in {this.ready_in_mn} mn
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            </div>
         )
     }
 }
