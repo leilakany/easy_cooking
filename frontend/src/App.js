@@ -11,7 +11,7 @@ import InputBase from '@material-ui/core/InputBase';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 import RecipeCard from './RecipeCard';
-
+import GroceryList from './grocery_list/grocery_list';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -145,9 +145,9 @@ export default function App() {
     <div className={classes.root}>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Item One" {...a11yProps(0)} />
+          <Tab label="Recipes" {...a11yProps(0)} />
           <Tab label="Fridge" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="Groceries" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
 
@@ -204,7 +204,7 @@ export default function App() {
         <ClockUsingHooks></ClockUsingHooks>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <GroceryList></GroceryList>
       </TabPanel>
     </div>
   );
