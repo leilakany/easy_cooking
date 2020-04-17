@@ -11,7 +11,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
-import RecipeCard from './RecipeCard';
+import RecipeCard from './recipes/RecipeCard';
 import GroceryList from './grocery_list/grocery_list';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
