@@ -26,6 +26,7 @@ mongoose
 
 // Define some routers
 var ingredientRouter = require('./routes/ingredient');
+var groceryListRouter = require('./routes/grocery'  )
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,7 +42,7 @@ app.use('/testAPI', testAPIRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/ingredient', ingredientRouter); // Under endpoint /ingredient, we have REST operations for ingredient
-
+app.use('/grocery_list', groceryListRouter)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
