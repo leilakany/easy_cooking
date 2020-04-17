@@ -7,6 +7,17 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import RecipeTab from './recipes/RecipeTab';
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
+import Grid from '@material-ui/core/Grid';
+import axios from 'axios';
+import RecipeCard from './RecipeCard';
+import GroceryList from './grocery_list/grocery_list';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 import ClockUsingHooks from './fridge/FridgeComponent';
 import { BrowserRouter } from "react-router-dom";
 
@@ -87,6 +98,7 @@ export default function App() {
         <ClockUsingHooks></ClockUsingHooks>
       </TabPanel>
       <TabPanel value={value} index={2}>
+        <GroceryList></GroceryList>
       </TabPanel>
     </div>
     </BrowserRouter>
