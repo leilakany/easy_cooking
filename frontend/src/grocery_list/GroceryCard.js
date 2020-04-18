@@ -52,6 +52,28 @@ export default function GroceryCard(props) {
         })
     };
 
+    const confirmList  = () => {
+        // Items
+        const tmpItems = neededItems
+
+        let confirmListEndpoint = groceryEndpoint + "/confirm"
+        let ITEM_VALIDATED = true
+        axios.patch(confirmListEndpoint).then(resp => {
+            tmpItems.forEach(function(item, index){
+                this[index].checked = ITEM_VALIDATED
+            }, tmpItems)
+            setNeededItems([...tmpItems])
+            if(resp.data.is_complete){
+                // TODO : handle confirmation of list
+                console.log("grocery list validated")
+            }else{
+                //TODO : handle confirmation error
+                console.log("oops. Can't confirm the grocery list")
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+    }
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -108,7 +130,7 @@ export default function GroceryCard(props) {
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton aria-label="confirm list">
-                    <AssignmentTurnedInIcon />
+                    <AssignmentTurnedInIcon onClick={confirmList}/>
                 </IconButton>
                 <p>Confirm</p>
                 <IconButton

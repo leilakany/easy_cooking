@@ -76,6 +76,28 @@ async function getGrocery(req, res, next) {
 
 // ITEM ROUTES
 
+// Confirm all item in the list
+router.patch('/:id/confirm', async(req,res) => {
+    let ITEM_VALIDATED = true
+    let GROCERY_LIST_VALIDATED = true
+    GroceryList.findById(req.params.id,
+        function(err,groceryList){
+
+            if(err) return res.send(500).json({message: err})
+            groceryList.items.forEach(function(item, index){
+                this[index].checked = ITEM_VALIDATED
+            }, groceryList.items)
+
+            groceryList.is_complete = GROCERY_LIST_VALIDATED
+
+            groceryList.save((err, updatedGrocery) => {
+                if(err) return res.status(500).json({message: err.message})
+                return res.status(200).json(updatedGrocery)
+            })
+        })
+})
+
+
 // Change item 'check' state
 router.patch('/:id/item/:itemId', async(req,res) => {
 
