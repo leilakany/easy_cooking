@@ -23,7 +23,7 @@ mongoose
 
 // Define some routers
 var ingredientRouter = require('./routes/ingredient');
-var groceryListRouter = require('./routes/grocery'  )
+var groceryListRouter = require('./routes/grocery');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/ingredient', ingredientRouter);
-app.use('/grocery_list', groceryListRouter)
+app.use('/grocery_list', groceryListRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

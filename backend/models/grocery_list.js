@@ -5,7 +5,24 @@ const GroceryList = mongoose.model(
     new mongoose.Schema({
         name: String,
         is_complete: Boolean,
-        items: []
+        items: [{
+            name: {
+                type: String,
+                required: true,
+            },
+            quantity: {
+                type: String,
+                required: false,
+            },
+            unit: {
+                type: String,
+                required: true,
+            },
+            checked: {
+                type: Boolean,
+                required: false,
+            }
+        }]
     })
 )
 
