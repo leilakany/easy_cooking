@@ -19,6 +19,7 @@ import useStyles from './styles'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import ConfirmGroceryModal from './ConfirmGroceryModal'
 import axios from 'axios';
 
 const backendUrl = "http://127.0.0.1:9000/"
@@ -32,7 +33,7 @@ export default function GroceryCard(props) {
     const [neededItems, setNeededItems] = React.useState(props.items)
     const [anchorEl, setAnchorEl] = React.useState(null);
     const groceryEndpoint = backendUrl + "grocery_list/" + databaseId
-
+    const [showGroceryConfirmation, setShowGroceryConfirmation] = React.useState(false)
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
@@ -52,27 +53,14 @@ export default function GroceryCard(props) {
         })
     };
 
-    const confirmList  = () => {
-        // Items
+    const checkAll  = () => {
+        // // Items
         const tmpItems = neededItems
-
-        let confirmListEndpoint = groceryEndpoint + "/confirm"
-        let ITEM_VALIDATED = true
-        axios.patch(confirmListEndpoint).then(resp => {
-            tmpItems.forEach(function(item, index){
-                this[index].checked = ITEM_VALIDATED
-            }, tmpItems)
-            setNeededItems([...tmpItems])
-            if(resp.data.is_complete){
-                // TODO : handle confirmation of list
-                console.log("grocery list validated")
-            }else{
-                //TODO : handle confirmation error
-                console.log("oops. Can't confirm the grocery list")
-            }
-        }).catch(err => {
-            console.log(err)
-        })
+        const ITEM_VALIDATED = true;
+        tmpItems.forEach(function(item, index){
+            this[index].checked = ITEM_VALIDATED
+        }, tmpItems)
+        setNeededItems([...tmpItems])
     }
 
     const handleClick = (event) => {
@@ -94,6 +82,7 @@ export default function GroceryCard(props) {
     };
 
     return (
+        <>
         <Card className={classes.root}>
             <Menu
                 id="simple-menu"
@@ -126,11 +115,12 @@ export default function GroceryCard(props) {
             <CardContent>
                 <Typography variant="body2" color="textSecondary" component="p">
                     Click on 'More' to see al items you need !
+                    Click 'Confirm' when you want to add items to your fridge
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
-                <IconButton aria-label="confirm list">
-                    <AssignmentTurnedInIcon onClick={confirmList}/>
+                <IconButton onClick={() => setShowGroceryConfirmation(true)} aria-label="confirm list">
+                    <AssignmentTurnedInIcon/>
                 </IconButton>
                 <p>Confirm</p>
                 <IconButton
@@ -158,5 +148,7 @@ export default function GroceryCard(props) {
                 </CardContent>
             </Collapse>
         </Card>
-    );
+        { showGroceryConfirmation ? <ConfirmGroceryModal closingModal={() => setShowGroceryConfirmation(false)} groceryEndpoint={groceryEndpoint} checkAll={checkAll}></ConfirmGroceryModal> : ""}
+        </>
+        );
 }
