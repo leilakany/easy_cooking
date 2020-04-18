@@ -7,18 +7,8 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import RecipeTab from './recipes/RecipeTab';
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
-import Grid from '@material-ui/core/Grid';
-import axios from 'axios';
-import RecipeCard from './recipes/RecipeCard';
-import GroceryList from './grocery_list/grocery_list';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import ClockUsingHooks from './fridge/FridgeComponent';
+import GroceryList from './grocery_list/GroceryList';
+import Fridge from './fridge/Fridge';
 import { BrowserRouter } from "react-router-dom";
 
 function TabPanel(props) {
@@ -87,7 +77,7 @@ export default function App() {
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Recipes" {...a11yProps(0)} href="/"/>
           <Tab label="Fridge" {...a11yProps(1)} />
-          <Tab label="..." {...a11yProps(2)} />
+          <Tab label="Groceries" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
 
@@ -95,7 +85,7 @@ export default function App() {
         <RecipeTab/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <ClockUsingHooks></ClockUsingHooks>
+        <Fridge></Fridge>
       </TabPanel>
       <TabPanel value={value} index={2}>
         <GroceryList></GroceryList>
