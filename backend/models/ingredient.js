@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-var SchemaTypes = mongoose.Schema.Types;
+const SchemaTypes = mongoose.Schema.Types;
 const ingredientSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -17,7 +17,7 @@ const ingredientSchema = new mongoose.Schema({
     api_id: {
         type: Number,
         required: true,
-    }
-})
+    },
+});
 
 module.exports = mongoose.model('Ingredient', ingredientSchema);
