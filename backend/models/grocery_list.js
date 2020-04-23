@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const GroceryList = mongoose.model(
-    "GroceryList",
+    'GroceryList',
     new mongoose.Schema({
         name: String,
         is_complete: Boolean,
