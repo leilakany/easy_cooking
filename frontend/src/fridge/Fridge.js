@@ -3,15 +3,15 @@ import axios from 'axios';
 import MaterialTable, { MTableEditField } from 'material-table';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-
 import top1000_ingredients from '../assets/spoonacular_ingredients.json'
-const backend_url = "http://127.0.0.1:9000/"
 
-export default function ClockUsingHooks() {
+const backend_url = "http://127.0.0.1:9000/"
+const baseUnits = {1:"tsp", 2:"tbs", 3:"fl oz", 4:"cup", 5: "pint", 6:"quart", 7:"gallon"
+                        , 8:"ml", 9:"l", 10:"pound", 11:"ounce", 12:"mg", 13:"g", 14:"kg", 15:"mm", 16:"cm", 17:"m", 18:"inch"}
+
+export default function Fridge() {
     const [state, setState] = useState({})
     const [tmpIngredientName, setTmpIngredientName] = useState(null)
-    const baseUnits = {1:"tsp", 2:"tbs", 3:"fl oz", 4:"cup", 5: "pint", 6:"quart", 7:"gallon"
-                        , 8:"ml", 9:"l", 10:"pound", 11:"ounce", 12:"mg", 13:"g", 14:"kg", 15:"mm", 16:"cm", 17:"m", 18:"inch"}
 
     function postIngredient(ingredient) {
         axios.post(backend_url + 'ingredient', {
@@ -77,6 +77,7 @@ export default function ClockUsingHooks() {
             title="My fridge"
             columns={state.columns}
             data={state.data}
+            options={{pageSize:15, pageSizeOptions:[15,30,60]}}
             // Override of edit field to get an autocomplete search bar
             components={{
                 EditField: props => {
