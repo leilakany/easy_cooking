@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import Link from '@material-ui/core/Link';
 
 let API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -10,13 +9,13 @@ class CompleteRecipe extends React.Component {
       this.state = {
         steps : [],
       }
-      let request = 'https://api.spoonacular.com/recipes/'+this.props.id+'/analyzedInstructions'+'?apiKey='+API_KEY;
+      let request = 'https://api.spoonacular.com/recipes/'+this.props.id+'/analyzedInstructions?apiKey='+API_KEY;
       console.log(request)
       axios.get(request).then((resp)=>
         this.setState({ steps : resp.data[0].steps })
       )
-  } 
-  render(){ 
+  }
+  render(){
 
     return (
       <div>
@@ -28,4 +27,3 @@ class CompleteRecipe extends React.Component {
 }
 
 export default CompleteRecipe;
-  

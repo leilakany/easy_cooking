@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import GroceryCard from './grocery_card';
+import GroceryCard from './GroceryCard';
 import Grid from '@material-ui/core/Grid';
 
 const backend_url = "http://127.0.0.1:9000/"
