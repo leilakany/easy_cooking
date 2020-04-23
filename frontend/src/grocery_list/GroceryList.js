@@ -3,21 +3,21 @@ import axios from 'axios';
 import GroceryCard from './GroceryCard';
 import Grid from '@material-ui/core/Grid';
 
-const backend_url = "http://127.0.0.1:9000/"
+const backendUrl = "http://127.0.0.1:9000/"
 
 
 export default function GroceryList() {
     const [groceries, setGroceries] = useState([])
 
     useEffect(() => {
-        let all_groceries_ep = backend_url + "grocery_list/"
-        axios.get(all_groceries_ep).then(resp => {
+        let allGroceryListEndpoint = backendUrl + "grocery_list/"
+        axios.get(allGroceryListEndpoint).then(resp => {
             setGroceries(resp.data)
         })
     }, [])
 
-    const removingList = (list_index) => {
-        groceries.splice(list_index, 1)
+    const removingList = (groceryListIndex) => {
+        groceries.splice(groceryListIndex, 1)
         setGroceries([...groceries])
     }
 
@@ -26,10 +26,10 @@ export default function GroceryList() {
     return (
         <Grid container direction="row" spacing={3} >
             {
-                groceries.map((grocery_list, idx) => {
+                groceries.map((groceryList, idx) => {
                     return (
                         <Grid item xs={3}>
-                            <GroceryCard unmountList={removingList} idx={idx} items={grocery_list.items} db_id={grocery_list._id} name={grocery_list.name}></GroceryCard>
+                            <GroceryCard unmountList={removingList} idx={idx} items={groceryList.items} databaseId={groceryList._id} name={groceryList.name}></GroceryCard>
                         </Grid>)
                 })
             }

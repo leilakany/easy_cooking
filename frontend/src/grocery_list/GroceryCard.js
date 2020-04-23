@@ -13,47 +13,68 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import GroceriesPic from '../assets/groceries.jpg'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import GreenCheckbox from './cbx_grocery';
+import GreenCheckbox from './CbxGrocery';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import useStyles from './styles'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import ConfirmGroceryModal from './ConfirmGroceryModal'
 import axios from 'axios';
 
-const backend_url = "http://127.0.0.1:9000/"
+const backendUrl = "http://127.0.0.1:9000/"
 
 export default function GroceryCard(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
-    const name = props.name
-    const db_id = props.db_id
-    const list_index = props.idx
+    const groceryName = props.name
+    const databaseId = props.databaseId
+    const listIndex = props.idx
     const [neededItems, setNeededItems] = React.useState(props.items)
-
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const groceryEndpoint = backendUrl + "grocery_list/" + databaseId
+    const [showGroceryConfirmation, setShowGroceryConfirmation] = React.useState(false)
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
-    const handleChange = (key, value) => {
-        const tmp_items = neededItems
-        tmp_items[key].checked = !value
-        setNeededItems([...tmp_items])
+    const changeItemState = (itemIndex, checkedState) => {
+        // Item
+        const tmpItems = neededItems
+
+        // change item state
+        let changeItemStateEndpoint = groceryEndpoint + "/item/" + tmpItems[itemIndex]._id
+        axios.patch(changeItemStateEndpoint).then(resp => {
+            //frontend changes
+            tmpItems[itemIndex].checked = !checkedState
+            setNeededItems([...tmpItems])
+            }).catch(err => {
+            console.log(err)
+        })
     };
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const checkAll  = () => {
+        // // Items
+        const tmpItems = neededItems
+        const ITEM_VALIDATED = true;
+        tmpItems.forEach(function(item, index){
+            this[index].checked = ITEM_VALIDATED
+        }, tmpItems)
+        setNeededItems([...tmpItems])
+    }
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
     const removeList = () => {
-        let remove_list_url = backend_url + "grocery_list/" + db_id
-        axios.delete(remove_list_url).then(resp => {
-            console.log("deleted list")
+        axios.delete(groceryEndpoint).then(resp => {
+            props.unmountList(listIndex)
+            handleClose()
+        }).catch(err => {
+            console.log(err)
         })
-        props.unmountList(list_index)
-        handleClose()
+
     }
 
     const handleClose = () => {
@@ -61,6 +82,7 @@ export default function GroceryCard(props) {
     };
 
     return (
+        <>
         <Card className={classes.root}>
             <Menu
                 id="simple-menu"
@@ -83,7 +105,7 @@ export default function GroceryCard(props) {
                         <MoreVertIcon />
                     </IconButton>
                 }
-                title={name}
+                title={groceryName}
             />
             <CardMedia
                 className={classes.media}
@@ -93,11 +115,12 @@ export default function GroceryCard(props) {
             <CardContent>
                 <Typography variant="body2" color="textSecondary" component="p">
                     Click on 'More' to see al items you need !
+                    Click 'Confirm' when you want to add items to your fridge
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
-                <IconButton aria-label="confirm list">
-                    <AssignmentTurnedInIcon />
+                <IconButton onClick={() => setShowGroceryConfirmation(true)} aria-label="confirm list">
+                    <AssignmentTurnedInIcon/>
                 </IconButton>
                 <p>Confirm</p>
                 <IconButton
@@ -117,7 +140,7 @@ export default function GroceryCard(props) {
                     {neededItems.length ? neededItems.map((item, idx) => {
                         return (<Typography>
                             <FormControlLabel
-                                control={<GreenCheckbox checked={item.checked} onChange={(e, data) => handleChange(idx, item.checked)} />}
+                                control={<GreenCheckbox checked={item.checked} onChange={(e, data) => changeItemState(idx, item.checked)} />}
                                 label={item.name}
                             />
                         </Typography>)
@@ -125,5 +148,7 @@ export default function GroceryCard(props) {
                 </CardContent>
             </Collapse>
         </Card>
-    );
+        { showGroceryConfirmation ? <ConfirmGroceryModal closingModal={() => setShowGroceryConfirmation(false)} groceryEndpoint={groceryEndpoint} checkAll={checkAll}></ConfirmGroceryModal> : ""}
+        </>
+        );
 }

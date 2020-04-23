@@ -77,6 +77,7 @@ export default function Fridge() {
             title="My fridge"
             columns={state.columns}
             data={state.data}
+            options={{pageSize:15, pageSizeOptions:[15,30,60]}}
             // Override of edit field to get an autocomplete search bar
             components={{
                 EditField: props => {
