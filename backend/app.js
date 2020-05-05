@@ -5,9 +5,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-const testAPIRouter = require('./routes/testAPI');
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 // Need a virtual environment loaded in a .env file
 require('dotenv').config();
 
@@ -38,7 +35,6 @@ app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/', indexRouter);
 app.use('/ingredient', ingredientRouter); // Under endpoint /ingredient, we have REST operations for ingredient
 app.use('/grocery_list', groceryListRouter);
 // catch 404 and forward to error handler
