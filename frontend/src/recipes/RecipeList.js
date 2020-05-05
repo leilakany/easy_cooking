@@ -12,6 +12,7 @@ class RecipeList extends React.Component {
       this.recipes = this.props.recipes;
       this.url = this.props.url;
       this.query = this.props.query;
+      this.diet = this.props.diet;
 
     }
 
@@ -19,10 +20,8 @@ class RecipeList extends React.Component {
 
     }
 
-         
-
     render(){ 
-
+      this.diet = this.props.diet;
       this.recipes = this.props.recipes;
       this.url = this.props.url;
       this.query = this.props.query;
@@ -30,7 +29,7 @@ class RecipeList extends React.Component {
       return (
         <div>
           <Grid container direction="row" spacing={3} >
-              {this.recipes.map((item, i)=>{ return <Grid item xs={3} key={item.id}><RecipeCard id={item.id} title={item.title} img={item.image} url={this.url} time={item.readyInMinutes}></RecipeCard></Grid>})}
+              {this.recipes.map((item, i)=>{ return <Grid item xs={3} key={item.id}><RecipeCard id={item.id} title={item.title} img={item.image} url={this.url} time={item.readyInMinutes} query={this.query} diet={this.diet}></RecipeCard></Grid>})}
         </Grid>
         </div>
       )

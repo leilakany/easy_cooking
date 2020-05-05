@@ -9,15 +9,11 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import withStyles from '@material-ui/core/styles/withStyles';   
 import {fade} from '@material-ui/core/styles';
-
+import { withRouter } from "react-router-dom";
 
 import RecipeList from "./RecipeList";
 
-import axios from 'axios';
-
-
-let API_KEY = process.env.REACT_APP_API_KEY;
-let API_URL = "https://api.spoonacular.com/recipes/";
+import { searchRecipes } from './spoonacular_queries';
 
 const styles = theme => ({
     root: {
@@ -68,97 +64,113 @@ class SearchMenu extends React.Component {
   constructor(props){
     super(props);
       this.state = {
+          recipes:[],
           diet:'',
           query:'',
-          recipes:[],
           url:''
     }
     this.handleDietChange = this.handleDietChange.bind(this);
     this.keyPress = this.keyPress.bind(this);
+  }
+
+    componentDidMount() {
+      if(this.props.query){
+        searchRecipes(this.props.query, this.props.diet).then((resp) => {
+          this.setState({
+            recipes:resp.results,
+            url:resp.baseUri,
+          })
+        }).catch((err) => {
+          console.log(err);
+        })
+        this.setState({ query:this.props.query })
+      }
+
+      if (this.props.diet){
+        this.setState({ diet:this.props.diet }
+      )}
+
     }
 
     handleDietChange = (event) => {
       let diet = event.target.value
-
-        if (this.state.query.localeCompare('')!==0){
-            let request = API_URL+'search?number=12&apiKey='+API_KEY+'&query='+this.state.query+"&diet="+diet
-            axios.get(request).then((resp) => {
-            let recipes = []
-            let url = resp.data.baseUri;
-            recipes = resp.data.results;
-            this.setState({'recipes':recipes, 'diet':diet, 'url':url})
-            })
-        }
-        this.setState({diet:diet})
+      searchRecipes(this.state.query, diet).then((resp) => {
+        this.setState({
+          recipes:resp.results,
+          url:resp.baseUri,
+        })
+      }).catch((err) => {
+        console.log(err);
+      })
+      this.setState({diet:diet})
     };
 
     keyPress = (event) => {
-      let query = event.target.value
+      let query = event.target.value;
       if(event.keyCode === 13){
-        let request = API_URL+'search?number=12&apiKey='+API_KEY+'&query='+query;
-        if (this.state.diet.localeCompare('')!==0) {
-        request += '&diet='+this.state.diet;
-        }
-        axios.get(request).then((resp) => {
-            let recipes = []
-            let url = resp.data.baseUri;
-            recipes = resp.data.results;
-            this.setState({'recipes':recipes, 'url':url, 'query':query});
+        searchRecipes(query, this.state.diet).then((resp) => {
+          this.setState({
+            recipes:resp.results,
+            url:resp.baseUri,
+            query:query
+          })
+        }).catch((err) => {
+          console.log(err);
         })
-      } 
-    }
+      }
+    };
       
     render(){ 
-        const { classes } = this.props;
-
-        return (
-            <div>
-            <Grid container spacing={3}>
-            <Grid item xs={12}>
-            <h1>Welcome to easy cooking ! </h1>
-            </Grid>
-            <Grid item xs={4}>
-            <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                    <SearchIcon />
-                </div>
-                <div>
-                <InputBase
-                    placeholder="Search recipe"
-                    classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                    onKeyDown = {this.keyPress}
-                />
-                </div>
-                </div>
-            </Grid>
-            <Grid item xs={4}>
-            <FormControl component="fieldset">
-            <FormLabel component="legend">Diet</FormLabel>
-            <RadioGroup row aria-label="diet" name="dier1"  onChange={this.handleDietChange}>
-                <FormControlLabel value="" control={<Radio />} label="No special diet" checked={this.state.diet.localeCompare('')===0}/>
-                <FormControlLabel value="vegetarian" control={<Radio />} label="Vegetarian" checked={this.state.diet.localeCompare('vegetarian')===0}/>
-                <FormControlLabel value="vegan" control={<Radio />} label="Vegan" checked={this.state.diet.localeCompare('vegan')===0}/>
-            </RadioGroup>
-            </FormControl>
-            </Grid>
-            <Grid item xs={4}>
-            <FormControl component="fieldset">
-            <FormLabel component="legend">Ingredients</FormLabel>
-            <RadioGroup row aria-label="ingredients" name="dier1" >
-                <FormControlLabel value="fridge" control={<Radio />} label="In my fridge" />
-                <FormControlLabel value="all" control={<Radio />} label="All" checked={true}/>
-            </RadioGroup>
-            </FormControl>
-            </Grid>
-            <RecipeList recipes={this.state.recipes} url={this.state.url} />
-        </Grid>
-        </div>
-        )
-        }
+      const { classes } = this.props;
+ 
+      return (
+          <div>
+          <Grid container spacing={3}>
+          <Grid item xs={12}>
+          <h1>Welcome to easy cooking ! </h1>
+          </Grid>
+          <Grid item xs={4}>
+          <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                  <SearchIcon />
+              </div>
+              <div>
+              <InputBase
+                  placeholder="Search recipe"
+                  classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                  }}
+                  inputProps={{ 'aria-label': 'search' }}
+                  onKeyDown = {this.keyPress}
+              />
+              </div>
+              </div>
+          </Grid>
+          <Grid item xs={4}>
+          <FormControl component="fieldset">
+          <FormLabel component="legend">Diet</FormLabel>
+          <RadioGroup row aria-label="diet" name="dier1"  onChange={this.handleDietChange}>
+              <FormControlLabel value="" control={<Radio />} label="No special diet" checked={this.state.diet.localeCompare('')===0}/>
+              <FormControlLabel value="vegetarian" control={<Radio />} label="Vegetarian" checked={this.state.diet.localeCompare('vegetarian')===0}/>
+              <FormControlLabel value="vegan" control={<Radio />} label="Vegan" checked={this.state.diet.localeCompare('vegan')===0}/>
+          </RadioGroup>
+          </FormControl>
+          </Grid>
+          <Grid item xs={4}>
+          <FormControl component="fieldset">
+          <FormLabel component="legend">Ingredients</FormLabel>
+          <RadioGroup row aria-label="ingredients" name="dier1" >
+              <FormControlLabel value="fridge" control={<Radio />} label="In my fridge" />
+              <FormControlLabel value="all" control={<Radio />} label="All" checked={true}/>
+          </RadioGroup>
+          </FormControl>
+          </Grid>
+          <RecipeList recipes={this.state.recipes} url={this.state.url} query={this.state.query} diet={this.state.diet}/>
+      </Grid>
+      </div>
+      );
+      }
     }
 
-export default withStyles(styles)(SearchMenu);
+export default withRouter(withStyles(styles)(SearchMenu));
