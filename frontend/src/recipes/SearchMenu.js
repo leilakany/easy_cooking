@@ -75,7 +75,7 @@ class SearchMenu extends React.Component {
 
     componentDidMount() {
       if(this.props.query){
-        searchRecipes(this.props.query, this.props.diet).then((resp) => {
+        searchRecipes(this.props.query, this.props.diet, 0).then((resp) => {
           this.setState({
             recipes:resp.results,
             url:resp.baseUri,
@@ -94,7 +94,7 @@ class SearchMenu extends React.Component {
 
     handleDietChange = (event) => {
       let diet = event.target.value
-      searchRecipes(this.state.query, diet).then((resp) => {
+      searchRecipes(this.state.query, diet, 0).then((resp) => {
         this.setState({
           recipes:resp.results,
           url:resp.baseUri,
@@ -108,7 +108,7 @@ class SearchMenu extends React.Component {
     keyPress = (event) => {
       let query = event.target.value;
       if(event.keyCode === 13){
-        searchRecipes(query, this.state.diet).then((resp) => {
+        searchRecipes(query, this.state.diet, 0).then((resp) => {
           this.setState({
             recipes:resp.results,
             url:resp.baseUri,
