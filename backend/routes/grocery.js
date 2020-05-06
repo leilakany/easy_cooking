@@ -1,5 +1,6 @@
 const express = require('express');
-const Ingredient = require('../models/ingredient')
+const Ingredient = require('../models/ingredient');
+
 const router = express.Router();
 const GroceryList = require('../models/grocery_list');
 
@@ -78,101 +79,97 @@ async function getGrocery(req, res, next) {
 // ITEM ROUTES
 
 // // Check all items in the list
-async function checkall(groceryId){
-    let ITEM_VALIDATED = true
-    let GROCERY_LIST_VALIDATED = true
+async function checkall(groceryId) {
+    const ITEM_VALIDATED = true;
+    const GROCERY_LIST_VALIDATED = true;
     GroceryList.findById(groceryId,
-        function (err, groceryList) {
-            if (err) return res.status(500).json({message: err.message})
+        (err, groceryList) => {
+            if (err) return res.status(500).json({ message: err.message });
             groceryList.items.forEach(function (item, index) {
-                this[index].checked = ITEM_VALIDATED
-            }, groceryList.items)
+                this[index].checked = ITEM_VALIDATED;
+            }, groceryList.items);
 
-            groceryList.is_complete = GROCERY_LIST_VALIDATED
+            groceryList.is_complete = GROCERY_LIST_VALIDATED;
 
             groceryList.save((err, updatedGrocery) => {
-                if (err) return err.message
-            })
-        })
+                if (err) return err.message;
+            });
+        });
 }
 
 // Add all checked items to fridge
 router.patch('/:id/confirm', async (req, res) => {
     // A single response to send to user
     GroceryList.findById(req.params.id,
-        function (err, groceryList) {
-            if (err) return res.send(500).json({ message: err.message })
-            groceryList.items.forEach(async function (item, index) {
-
+        (err, groceryList) => {
+            if (err) return res.send(500).json({ message: err.message });
+            groceryList.items.forEach(async (item, index) => {
                 // Define a json object holding values
                 const ingredient = new Ingredient({
                     name: item.name,
                     quantity: item.quantity,
                     // TODO : add api_id when adding from recipe or from new grocery list
                     api_id: 0,
-                    unit: item.unit
-                })
+                    unit: item.unit,
+                });
 
                 // Add to mongo the entity previously created
                 try {
-                   const newIngredient = await ingredient.save()
+                    const newIngredient = await ingredient.save();
                 } catch (err) {
-                    res.status(500).json({message : err.message})
+                    res.status(500).json({ message: err.message });
                 }
-            })
+            });
             // If checkall is true, then we check all items in the grocery list
-            if(req.body.checkall){
-                checkall(req.params.id)
+            if (req.body.checkall) {
+                checkall(req.params.id);
             }
-            res.status(200).json({message: "all items saved"})
-        })
-
-
-})
+            res.status(200).json({ message: 'all items saved' });
+        });
+});
 
 
 // Change item 'check' state
 router.patch('/:id/item/:itemId', async (req, res) => {
-
     // Get the item state and inverse it
     GroceryList.findOne({ 'items._id': req.params.itemId },
-        function (err, grocery) {
-            if (err) return res.status(500).json({ message: err.message })
+        (err, grocery) => {
+            if (err) return res.status(500).json({ message: err.message });
 
-            item = grocery.items.id(req.params.itemId)
+            item = grocery.items.id(req.params.itemId);
             item.checked = !item.checked;
 
             grocery.save((err, updatedGrocery) => {
-                if (err) return res.status(500).json({ message: err.message })
-                return res.status(200).json(updatedGrocery)
-            })
-        }
-    )
-})
+                if (err) return res.status(500).json({ message: err.message });
+                return res.status(200).json(updatedGrocery);
+            });
+        });
+});
 
 // Add item to grocery list
 router.post('/:id/item', async (req, res) => {
     if (!req.body) {
-        return res.status(500).json({ 'message': 'Empty item' })
-    } else {
-        GroceryList.findByIdAndUpdate(
-            req.params.id,
-            {
-                $push: {
-                    items: {
-                        name: req.body.name,
-                        quantity: req.body.quantity,
-                        unit: req.body.unit,
-                        checked: false,
-                    }
-                }
-            },
-            { new: true, useFindAndModify: false, rawResult: true }
-            , (err, updated_list) => {
-                if (err) return res.status(500).json({ message: err.message })
-                res.send(updated_list)
-            })
+        return res.status(500).json({ message: 'Empty item' });
     }
+    GroceryList.findByIdAndUpdate(
+        req.params.id,
+        {
+            $push: {
+                items: {
+                    name: req.body.name,
+                    quantity: req.body.quantity,
+                    unit: req.body.unit,
+                    checked: false,
+                },
+            },
+        },
+        { new: true, useFindAndModify: false, rawResult: true },
+        (err, updated_list) => {
+            if (err) return res.status(500).json({ message: err.message });
+            res.send(updated_list);
+        },
+    );
+
     GroceryList.findByIdAndUpdate(
         req.params.id,
         {

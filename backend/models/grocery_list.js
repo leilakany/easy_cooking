@@ -21,9 +21,9 @@ const GroceryList = mongoose.model(
             checked: {
                 type: Boolean,
                 required: false,
-            }
-        }]
-    })
-)
+            },
+        }],
+    }),
+);
 
 module.exports = GroceryList;
