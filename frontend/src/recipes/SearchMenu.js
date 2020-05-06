@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
@@ -56,8 +57,15 @@ const styles = theme => ({
         width: '100%',
         [theme.breakpoints.up('md')]: {
           width: '20ch',
-        }
-    }});
+        },
+      },
+      item: {
+        padding: 15,
+        borderRadius: 5,
+        width: '1850px',
+        height: '40px',
+      }
+    });
 
 
 class SearchMenu extends React.Component {
@@ -67,15 +75,18 @@ class SearchMenu extends React.Component {
           recipes:[],
           diet:'',
           query:'',
-          url:''
+          url:'',
+          offset:1,
     }
     this.handleDietChange = this.handleDietChange.bind(this);
     this.keyPress = this.keyPress.bind(this);
+    this.loadMore = this.loadMore.bind(this)
+
   }
 
     componentDidMount() {
       if(this.props.query){
-        searchRecipes(this.props.query, this.props.diet).then((resp) => {
+        searchRecipes(this.props.query, this.props.diet, 0).then((resp) => {
           this.setState({
             recipes:resp.results,
             url:resp.baseUri,
@@ -94,7 +105,7 @@ class SearchMenu extends React.Component {
 
     handleDietChange = (event) => {
       let diet = event.target.value
-      searchRecipes(this.state.query, diet).then((resp) => {
+      searchRecipes(this.state.query, diet, 0).then((resp) => {
         this.setState({
           recipes:resp.results,
           url:resp.baseUri,
@@ -108,7 +119,7 @@ class SearchMenu extends React.Component {
     keyPress = (event) => {
       let query = event.target.value;
       if(event.keyCode === 13){
-        searchRecipes(query, this.state.diet).then((resp) => {
+        searchRecipes(query, this.state.diet, 0).then((resp) => {
           this.setState({
             recipes:resp.results,
             url:resp.baseUri,
@@ -119,9 +130,30 @@ class SearchMenu extends React.Component {
         })
       }
     };
+
+
+    loadMore = () => {
+      searchRecipes(this.state.query, this.state.diet, this.state.offset).then((resp) => {
+        this.setState({recipes:this.state.recipes.concat(resp.results)})
+      }).catch((err) => {
+        console.log(err);
+      })
+      this.setState({offset:this.state.offset+1})
+    };
       
     render(){ 
       const { classes } = this.props;
+
+      let button;
+      if (this.state.recipes.length > 0){
+        button = <Button
+                    className={classes.item}
+                    variant="contained"
+                    color="primary"
+                    onClick = {this.loadMore}>
+                    View more
+                  </Button>
+      }
  
       return (
           <div>
@@ -167,6 +199,9 @@ class SearchMenu extends React.Component {
           </FormControl>
           </Grid>
           <RecipeList recipes={this.state.recipes} url={this.state.url} query={this.state.query} diet={this.state.diet}/>
+          <Grid item xs={12}>
+          {button}
+          </Grid>
       </Grid>
       </div>
       );
