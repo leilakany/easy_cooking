@@ -16,6 +16,7 @@ class RecipeCard extends React.Component {
         this.url = this.props.url;
         this.image_url = this.url+this.props.img;
         this.query = this.props.query;
+        this.diet = this.props.diet;
     }
     
     render(){
@@ -35,7 +36,7 @@ class RecipeCard extends React.Component {
         return (
             <div>
                 <Card style={styles.card}>
-                    <CardActionArea href={"/recipe/&id=" + this.id } > {/*Makes card cliquable*/}
+                    <CardActionArea href={"/recipe/&id=" + this.id +"&query="+ this.query + "&diet=" + this.diet} > {/*Makes card cliquable*/}
                         <CardMedia
                             image={this.image_url}
                             style={styles.media}

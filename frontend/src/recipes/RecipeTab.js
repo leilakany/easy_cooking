@@ -12,8 +12,9 @@ class RecipeTab extends React.Component {
 
       let location = this.props.location;
       const urlParams = new URLSearchParams(location.pathname);
-
       const id = urlParams.get('id');
+      const query = urlParams.get('query');
+      const diet = urlParams.get('diet');
 
       return (
         <Router>
@@ -23,11 +24,11 @@ class RecipeTab extends React.Component {
                     <Switch>
                         <Route
                             path='/recipe'
-                            render={(props) => <CompleteRecipe {...props} id={id} />}
+                            render={(props) => <CompleteRecipe {...props} id={id} query={query} diet={diet}/>}
                         />
                         <Route
                             path='/search'
-                            render={(props) => <SearchMenu {...props} />}
+                            render={(props) => <SearchMenu {...props} query={query} diet={diet}/>}
                         />
                         <Route path="/" component={SearchMenu} />
                     </Switch>
