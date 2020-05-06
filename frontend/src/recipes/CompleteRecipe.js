@@ -8,12 +8,16 @@ class CompleteRecipe extends React.Component {
       this.state = {
         steps : [],
       }
-      searchInstructions(this.props.id).then((resp) => {
-        this.setState({ steps : resp })
-      }).catch((err) => {
-        console.log(err);
-      })
   }
+
+  componentDidMount(){
+    searchInstructions(this.props.id).then((resp) => {
+      this.setState({ steps : resp })
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+  
   render(){
     return (
       <div>
